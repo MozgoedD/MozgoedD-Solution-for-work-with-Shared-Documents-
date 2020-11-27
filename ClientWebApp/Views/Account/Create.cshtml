@@ -1,0 +1,67 @@
+﻿@using ClientWebApp.Models
+@model ClientWebApp.Models.CreateModel
+
+@{
+    ViewBag.Title = "Create Account";
+}
+
+<h2>Create</h2>
+
+@Html.ValidationSummary(false)
+@using (Html.BeginForm())
+{
+    <div class="form-group">
+        <label>Email</label>
+        @Html.TextBoxFor(x => x.Email, new { @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        <label>First Name</label>
+        @Html.TextBoxFor(x => x.FirstName, new { @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        <label>Second Name</label>
+        @Html.TextBoxFor(x => x.SecondName, new { @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        <label>Patronymic</label>
+        @Html.TextBoxFor(x => x.Patronymic, new { @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        <label>City: </label>
+        @Html.DropDownListFor(x => x.Gender, new SelectList(
+                Enum.GetValues(typeof(Genders))), "Select Gender")
+    </div>
+
+    <div class="form-group">
+        <label>Date Of Birth</label>
+        @Html.TextBoxFor(x => x.DOB, new { @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        <label>Place Of Work</label>
+        @Html.TextBoxFor(x => x.PlaceOfWork, new { @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        <label>Job Position</label>
+        @Html.TextBoxFor(x => x.JobPosition, new { @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        <label>Country</label>
+        @Html.TextBoxFor(x => x.Country, new { @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        <label>City</label>
+        @Html.TextBoxFor(x => x.City, new { @class = "form-control" })
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create</button>
+
+    @Html.ActionLink("Cancel", "Login", null, new { @class = "btn btn-default" })
+}
