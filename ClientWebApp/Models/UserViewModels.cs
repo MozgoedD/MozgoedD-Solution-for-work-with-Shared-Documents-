@@ -17,7 +17,7 @@ namespace ClientWebApp.Models
         public string Patronymic { get; set; }
         public Genders Gender { get; set; }
         public string DOB { get; set; }
-        public string PlaceOfWork { get; set; }
+        public string Workplace { get; set; }
         public string JobPosition { get; set; }
         public string Country { get; set; }
         public string City { get; set; }

@@ -3,7 +3,7 @@ namespace ClientWebApp.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class FirstMigration : DbMigration
+    public partial class Creation : DbMigration
     {
         public override void Up()
         {
@@ -37,16 +37,17 @@ namespace ClientWebApp.Migrations
                     {
                         Id = c.String(nullable: false, maxLength: 128),
                         FirstName = c.String(),
-                        SecondtName = c.String(),
+                        SecondName = c.String(),
                         Patronymic = c.String(),
                         Gender = c.Int(nullable: false),
                         DOB = c.String(),
-                        PlaceOfWork = c.String(),
+                        Workplace = c.String(),
                         JobPosition = c.String(),
                         Country = c.String(),
                         City = c.String(),
-                        IsApprove = c.Boolean(nullable: false),
+                        IsApproved = c.Boolean(nullable: false),
                         RawPassword = c.String(),
+                        SharePointId = c.Int(nullable: false),
                         Email = c.String(maxLength: 256),
                         EmailConfirmed = c.Boolean(nullable: false),
                         PasswordHash = c.String(),

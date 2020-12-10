@@ -5,6 +5,8 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -40,15 +42,15 @@ namespace ClientWebApp.Controllers
                     UserName = model.Email,
                     Email = model.Email,
                     FirstName = model.FirstName,
-                    SecondtName = model.SecondName,
+                    SecondName = model.SecondName,
                     Patronymic = model.Patronymic,
                     Gender = model.Gender,
                     DOB = model.DOB,
-                    PlaceOfWork = model.PlaceOfWork,
+                    Workplace = model.Workplace,
                     JobPosition = model.JobPosition,
                     City = model.City,
                     Country = model.Country,
-                    IsApprove = false,
+                    IsApproved = false,
                     RawPassword = System.Web.Security.Membership.GeneratePassword(5, 0)
                 };
 
@@ -63,6 +65,12 @@ namespace ClientWebApp.Controllers
                     }
                     else
                     {
+                        user.SharePointId = SharePointManager.AddUserToSpList(user);
+                        result = await UserManager.UpdateAsync(user);
+                        if (!result.Succeeded)
+                        {
+                            AddErrorsFromResult(result);
+                        }
                         return RedirectToAction("Index");
                     }
                 }
@@ -79,10 +87,15 @@ namespace ClientWebApp.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                return View("Error", new string[] { "Not Access" });
+                return RedirectToAction("LoginNotAccess");
             }
 
             ViewBag.returnUrl = returnUrl;
+            return View();
+        }
+
+        public ActionResult LoginNotAccess(string returnUrl)
+        {
             return View();
         }
 
@@ -98,7 +111,7 @@ namespace ClientWebApp.Controllers
             }
             else
             {
-                if (user.IsApprove)
+                if (user.IsApproved)
                 {
                     ClaimsIdentity ident = await UserManager.CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie);
 
@@ -107,6 +120,11 @@ namespace ClientWebApp.Controllers
                     {
                         IsPersistent = false
                     }, ident);
+
+                    if (returnUrl == null)
+                    {
+                        return RedirectToAction("Index", "Home");
+                    }
                     return Redirect(returnUrl);
                 }
                 else

@@ -9,14 +9,14 @@ namespace ClientWebApp.Migrations
     using System.Data.Entity.Migrations;
     using System.Linq;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<AppIdentityDbContext>
+    internal sealed class Configuration : DbMigrationsConfiguration<ClientWebApp.Infrastructure.AppIdentityDbContext>
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = false;
+            AutomaticMigrationsEnabled = true;
         }
 
-        protected override void Seed(AppIdentityDbContext context)
+        protected override void Seed(ClientWebApp.Infrastructure.AppIdentityDbContext context)
         {
             AppUserManager userMgr = new AppUserManager(new UserStore<AppUser>(context));
             AppRoleManager roleMgr = new AppRoleManager(new RoleStore<AppRole>(context));
@@ -45,6 +45,10 @@ namespace ClientWebApp.Migrations
                 if (!userMgr.IsInRole(user.Id, roleName))
                 {
                     userMgr.AddToRole(user.Id, roleName);
+
+                    user.FirstName = "Admin";
+                    user.IsApproved = true;
+                    userMgr.Update(user);
                 }
             }
 
@@ -54,7 +58,6 @@ namespace ClientWebApp.Migrations
             {
                 roleMgr.Create(new AppRole(roleName));
             }
-
             context.SaveChanges();
         }
     }

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
@@ -10,11 +12,19 @@ namespace ClientWebApp.Infrastructure
 {
     public static class EmailManager
     {
-        readonly static string host = "smtp.gmail.com";
-        readonly static int port = 587;
+        static readonly string host = "smtp.gmail.com";
+        static readonly int port = 587;
+
+        static EmailManager()
+        {
+            host = ConfigurationManager.AppSettings["EmailHost"];
+            port = Int16.Parse(ConfigurationManager.AppSettings["EmailPort"]);
+        }
+
         public static void Send(string subject, string mailText, string userEmail)
         {
-            MailAddress emailFrom = new MailAddress("testmvcapptask@gmail.com", "Azat Islamov");
+            MailAddress emailFrom = new MailAddress(ConfigurationManager.AppSettings["Email"],
+                ConfigurationManager.AppSettings["EmailName"]);
             MailAddress emailTo = new MailAddress(userEmail);
 
             MailMessage message = new MailMessage(emailFrom, emailTo);
@@ -23,10 +33,18 @@ namespace ClientWebApp.Infrastructure
             message.IsBodyHtml = false;
 
             SmtpClient smpt = new SmtpClient(host, port);
-            smpt.Credentials = new NetworkCredential("testmvcapptask@gmail.com", "MJzT4hOU");
+            smpt.Credentials = new NetworkCredential(ConfigurationManager.AppSettings["Email"],
+                ConfigurationManager.AppSettings["EmailPassword"]);
 
             smpt.EnableSsl = true;
-            smpt.Send(message);
+            try
+            {
+                smpt.Send(message);
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine($"MY MESSAGE: Email was not sent {e.Message}");
+            }
         }
     }
 }

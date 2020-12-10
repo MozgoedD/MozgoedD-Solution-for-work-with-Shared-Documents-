@@ -34,9 +34,9 @@ namespace ClientWebApp.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> ApprovePage(string id, bool isApprove)
+        public async Task<ActionResult> ApprovePage(string id, bool isApproved)
         {
-            if (isApprove)
+            if (isApproved)
             {
                 return RedirectToAction("Index");
             }
@@ -45,10 +45,11 @@ namespace ClientWebApp.Controllers
                 AppUser user = await UserManager.FindByIdAsync(id);
                 if (user != null)
                 {
-                    user.IsApprove = true;
+                    user.IsApproved = true;
                     IdentityResult result = await UserManager.UpdateAsync(user);
                     if (result.Succeeded)
                     {
+                        SharePointManager.ApproveUser(user);
                         EmailManager.Send("Your account is now approved!",
                             $"Your account is now approved!\nYour password is: {user.RawPassword}", user.Email);
                         return RedirectToAction("Index");
@@ -67,14 +68,44 @@ namespace ClientWebApp.Controllers
         }
 
         [HttpPost]
+        public async Task<ActionResult> Reject(string id)
+        {
+            AppUser user = await UserManager.FindByIdAsync(id);
+            if (user != null)
+            {
+                string userMail = user.Email;
+                IdentityResult result = await UserManager.DeleteAsync(user);
+                if (result.Succeeded)
+                {
+                    SharePointManager.DeleteUser(user);
+                    EmailManager.Send("Your account is not approved!",
+                        $"Your account is not approved! Please try to create a new request", userMail);
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    return View("Error", result.Errors);
+                }
+            }
+            else
+            {
+                return View("Error", new string[] { "User not found" });
+            }
+        }
+
+        [HttpPost]
         public async Task<ActionResult> Delete(string id)
         {
             AppUser user = await UserManager.FindByIdAsync(id);
             if (user != null)
             {
+                string userMail = user.Email;
                 IdentityResult result = await UserManager.DeleteAsync(user);
                 if (result.Succeeded)
                 {
+                    SharePointManager.DeleteUser(user);
+                    EmailManager.Send("Your account has been deleted!",
+                        $"Your account has been deleted! Please try to create a new request", userMail);
                     return RedirectToAction("Index");
                 }
                 else

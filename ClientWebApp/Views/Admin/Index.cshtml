@@ -28,11 +28,11 @@
                 <tr>
                     <td>@user.Id</td>
                     <td>@user.UserName</td>
-                    <td>@user.FirstName @user.SecondtName @user.Patronymic</td>
+                    <td>@user.FirstName @user.SecondName @user.Patronymic</td>
                     <td>
                         @using (Html.BeginForm("Delete", "Admin", new { id = user.Id }))
                         {
-                            if (user.IsApprove == false)
+                            if (user.IsApproved == false)
                             {
                                 @Html.ActionLink("Approve/Reject", "ApprovePage", new { id = user.Id }, new
                                 {

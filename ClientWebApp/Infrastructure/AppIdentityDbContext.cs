@@ -7,7 +7,7 @@ namespace ClientWebApp.Infrastructure
 {
     public class AppIdentityDbContext : IdentityDbContext<AppUser>
     {
-        public AppIdentityDbContext() : base("name=MyDB") { }
+        public AppIdentityDbContext() : base("name=MvcDatabase") { }
 
         static AppIdentityDbContext()
         {
@@ -36,7 +36,7 @@ namespace ClientWebApp.Infrastructure
 
     //        string roleName = "Administrators";
     //        string userName = "Admin";
-    //        string password = "0000";
+    //        string password = "mypassword";
     //        string email = "admin@professorweb.ru";
 
     //        if (!roleMgr.RoleExists(roleName))
@@ -44,8 +44,8 @@ namespace ClientWebApp.Infrastructure
     //            roleMgr.Create(new AppRole(roleName));
     //        }
 
-
     //        AppUser user = userMgr.FindByName(userName);
+
     //        if (user == null)
     //        {
     //            userMgr.Create(new AppUser { UserName = userName, Email = email },
@@ -53,9 +53,16 @@ namespace ClientWebApp.Infrastructure
     //            user = userMgr.FindByName(userName);
     //        }
 
-    //        if (!userMgr.IsInRole(user.Id, roleName))
+    //        if (user != null)
     //        {
-    //            userMgr.AddToRole(user.Id, roleName);
+    //            if (!userMgr.IsInRole(user.Id, roleName))
+    //            {
+    //                userMgr.AddToRole(user.Id, roleName);
+
+    //                user.FirstName = "Admin";
+    //                user.IsApprove = true;
+    //                userMgr.Update(user);
+    //            }
     //        }
 
     //        roleName = "Users";
@@ -64,6 +71,6 @@ namespace ClientWebApp.Infrastructure
     //        {
     //            roleMgr.Create(new AppRole(roleName));
     //        }
-    //}
+    //    }
 }
 

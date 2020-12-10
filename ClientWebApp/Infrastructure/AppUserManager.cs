@@ -37,5 +37,10 @@ namespace ClientWebApp.Infrastructure
 
             return manager;
         }
+
+        internal string FindByName(HttpContext current)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

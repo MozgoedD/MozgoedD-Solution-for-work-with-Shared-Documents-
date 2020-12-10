@@ -6,7 +6,7 @@
 }
 
 <div class="panel panel-primary">
-    <div class="panel-heading">User @Model.FirstName @Model.SecondtName @Model.Patronymic</div>
+    <div class="panel-heading">User @Model.FirstName @Model.SecondName @Model.Patronymic</div>
     <table class="table table-striped">
         <tr>
             <th>Property</th>
@@ -30,7 +30,7 @@
         </tr>
         <tr>
             <td>Place Of Work</td>
-            <td>@Model.PlaceOfWork</td>
+            <td>@Model.Workplace</td>
         </tr>
         <tr>
             <td>Job Position</td>
@@ -53,9 +53,14 @@
 @using (Html.BeginForm())
 {
     @Html.HiddenFor(x => x.Id)
-    @Html.HiddenFor(x => x.IsApprove)
+    @Html.HiddenFor(x => x.IsApproved)
     <button type="submit" class="btn btn-primary">Approve</button>
-    @Html.ActionLink("Reject", "Reject", null, new { @class = "btn btn-danger" })
     @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-default" })
+}
+
+@using (Html.BeginForm("Reject", "Admin", FormMethod.Post))
+{
+    @Html.HiddenFor(x => x.Id)
+    <button type="submit" class="btn btn-danger">Reject</button>
 }
 

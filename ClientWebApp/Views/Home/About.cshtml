@@ -6,7 +6,7 @@
 }
 
 <div class="panel panel-primary">
-    <div class="panel-heading">User @Model.FirstName @Model.SecondtName @Model.Patronymic</div>
+    <div class="panel-heading">User @Model.FirstName @Model.SecondName @Model.Patronymic</div>
     <table class="table table-striped">
         <tr>
             <th>Property</th>
@@ -17,12 +17,16 @@
             <td>@Model.Id</td>
         </tr>
         <tr>
+            <td>Email/Account Name</td>
+            <td>@Model.UserName</td>
+        </tr>
+        <tr>
             <td>Gender</td>
             <td>@Model.Gender</td>
         </tr>
         <tr>
             <td>Place Of Work</td>
-            <td>@Model.PlaceOfWork</td>
+            <td>@Model.Workplace</td>
         </tr>
         <tr>
             <td>Job Position</td>

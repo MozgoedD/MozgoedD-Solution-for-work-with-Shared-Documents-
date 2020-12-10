@@ -16,15 +16,16 @@ namespace ClientWebApp.Models
     public class AppUser : IdentityUser
     {
         public string FirstName { get; set; }
-        public string SecondtName { get; set; }
+        public string SecondName { get; set; }
         public string Patronymic { get; set; }
         public Genders Gender { get; set; }
         public string DOB { get; set; }
-        public string PlaceOfWork { get; set; }
+        public string Workplace { get; set; }
         public string JobPosition { get; set; }
         public string Country { get; set; }
         public string City { get; set; }
-        public bool IsApprove { get; set; }
+        public bool IsApproved { get; set; }
         public string RawPassword { get; set; }
+        public int SharePointId { get; set; }
     }
 }

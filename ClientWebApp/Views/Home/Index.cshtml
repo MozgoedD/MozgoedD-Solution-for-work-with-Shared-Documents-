@@ -1,17 +1,46 @@
-﻿@{
-    ViewBag.Title = "Index";
+﻿@model IEnumerable<ClientWebApp.Models.AppFileModel>
+@using ClientWebApp.Infrastructure
+
+@{
+    ViewBag.Title = "Files";
 }
 
-<div class="panel panel-primary">
-    <div class="panel-heading">User Data</div>
-    <table class="table table-striped">
-        @foreach (string key in Model.Keys)
-        {
-            <tr>
-                <th>@key</th>
-                <td>@Model[key]</td>
-            </tr>
-        }
-    </table>
-</div>
-@Html.ActionLink("Logout", "Logout", "Account", null, new { @class = "btn btn-primary" })
+<h2>Files</h2>
+
+<p>
+    @Html.ActionLink("Upload File", "Create", new { @class = "btn  btn-xs" })
+</p>
+<table class="table table-striped">
+    <tr>
+        <th>File</th>
+        <th>Author</th>
+        <th>Download</th>
+        <th>Delete</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.GetUserName(item.AuthorId)
+            </td>
+            <td>
+                @Html.ActionLink("Download File", "Download", new { fileId = item.Id },
+                   new { @class = "btn btn-default" })
+            </td>
+            <td>
+                @if (Html.GetUserName(item.AuthorId).ToString() == ViewBag.UserName || ViewBag.UserName == "Admin")
+                {
+                    using (Html.BeginForm("Delete", "Home", new { fileId = item.Id }))
+                    {
+                        <button class="btn btn-danger btn-xs" type="submit">Delete</button>
+                    }
+                }
+            </td>
+        </tr>
+    }
+
+</table>
