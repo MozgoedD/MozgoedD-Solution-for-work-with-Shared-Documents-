@@ -1,5 +1,7 @@
 ﻿using ClientWebApp.Infrastructure;
 using ClientWebApp.Models;
+using ClientWebApp.Services.Abstract;
+using ClientWebApp.Services.Concrete;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using System;
@@ -19,7 +21,7 @@ namespace ClientWebApp.Controllers
 
         public ActionResult Index()
         {
-            AppUser user = CurrentUser;
+            var user = CurrentUser;
             if (user != null)
             {
                 ViewBag.UserName = user.UserName;
@@ -29,7 +31,7 @@ namespace ClientWebApp.Controllers
 
         public ActionResult Create()
         {
-            AppUser user = CurrentUser;
+            var user = CurrentUser;
             ViewBag.AuthorId = user.Id;
             return View();
         }
@@ -37,10 +39,8 @@ namespace ClientWebApp.Controllers
         [HttpPost]
         public ActionResult Create(FileCreateModel fileModel)
         {
-
             if (ModelState.IsValid)
             {
-
                 AppFileModel file = new AppFileModel
                 {
                     Name = Path.GetFileName(fileModel.File.FileName),
@@ -50,10 +50,10 @@ namespace ClientWebApp.Controllers
                 var fileInDb = filesContext.Files.Where(f => f.Name == file.Name).FirstOrDefault();
                 if (fileInDb == null)
                 {
-                    byte[] uploadedFile = new byte[fileModel.File.InputStream.Length];
+                    var uploadedFile = new byte[fileModel.File.InputStream.Length];
                     fileModel.File.InputStream.Read(uploadedFile, 0, uploadedFile.Length);
                     file.File = uploadedFile.ToArray();
-                    SharePointManager.UploadFileToSP(file);
+                    spDocsManager.UploadFileToSP(file);
 
                     filesContext.Files.Add(file);
                     filesContext.SaveChanges();
@@ -61,17 +61,17 @@ namespace ClientWebApp.Controllers
                 }
                 else
                 {
-                    AppUser user = CurrentUser;
+                    var user = CurrentUser;
                     if (user.Id == fileInDb.AuthorId || UserManager.IsInRole(user.Id, "Administrators"))
                     {
-                        SharePointManager.DeleteFileFromSP(fileInDb);
+                        spDocsManager.DeleteFileFromSP(fileInDb);
                         filesContext.Files.Remove(fileInDb);
                         filesContext.SaveChanges();
 
-                        byte[] uploadedFile = new byte[fileModel.File.InputStream.Length];
+                        var uploadedFile = new byte[fileModel.File.InputStream.Length];
                         fileModel.File.InputStream.Read(uploadedFile, 0, uploadedFile.Length);
                         file.File = uploadedFile.ToArray();
-                        SharePointManager.UploadFileToSP(file);
+                        spDocsManager.UploadFileToSP(file);
 
                         filesContext.Files.Add(file);
                         filesContext.SaveChanges();
@@ -88,15 +88,15 @@ namespace ClientWebApp.Controllers
 
         public FileResult Download(int fileId)
         {
-            AppFileModel file = filesContext.Files.Find(fileId);
+            var file = filesContext.Files.Find(fileId);
             return File(file.File, "multipart/form-data", file.Name);
         }
 
         [HttpPost]
         public ActionResult Delete(int fileId)
         {
-            AppUser user = CurrentUser;
-            AppFileModel file = filesContext.Files.Find(fileId);
+            var user = CurrentUser;
+            var file = filesContext.Files.Find(fileId);
             if (file == null)
             {
                 return View("Error", new string[] { "User not found" });
@@ -105,7 +105,7 @@ namespace ClientWebApp.Controllers
             {
                 if (user.Id == file.AuthorId || UserManager.IsInRole(user.Id, "Administrators"))
                 {
-                    SharePointManager.DeleteFileFromSP(file);
+                    spDocsManager.DeleteFileFromSP(file);
                     filesContext.Files.Remove(file);
                     filesContext.SaveChanges();
                     return RedirectToAction("Index");
@@ -119,9 +119,13 @@ namespace ClientWebApp.Controllers
 
         public ActionResult About()
         {
-            AppUser user = CurrentUser;
+            var user = CurrentUser;
             if (user != null)
             {
+                if (UserManager.IsInRole(user.Id, "Administrators"))
+                {
+                    return RedirectToAction("Index", "Admin");
+                }
                 return View(user);
             }
             else
@@ -130,13 +134,13 @@ namespace ClientWebApp.Controllers
             }
         }
 
-        public ActionResult Contact()
+        private ISharePointSharedDocsManagerService spDocsManager
         {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
+            get
+            {
+                return new SharePointSharedDocsManagerService();
+            }
         }
-
 
         private AppUserManager UserManager
         {

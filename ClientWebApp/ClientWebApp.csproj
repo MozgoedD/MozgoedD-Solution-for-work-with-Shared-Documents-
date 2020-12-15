@@ -172,7 +172,6 @@
     <Compile Include="Infrastructure\AppUserManager.cs" />
     <Compile Include="Infrastructure\EmailManager.cs" />
     <Compile Include="Infrastructure\IdentityHelpers.cs" />
-    <Compile Include="Infrastructure\SharePointManager.cs" />
     <Compile Include="Migrations\202012081007290_Creation.cs" />
     <Compile Include="Migrations\202012081007290_Creation.Designer.cs">
       <DependentUpon>202012081007290_Creation.cs</DependentUpon>
@@ -185,6 +184,10 @@
     <Compile Include="Models\FileViewModels.cs" />
     <Compile Include="Models\UserViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\Abstract\ISharePointSharedDocsManagerService.cs" />
+    <Compile Include="Services\Abstract\ISharePointUserManagerService.cs" />
+    <Compile Include="Services\Concrete\SharePointSharedDocsManagerService.cs" />
+    <Compile Include="Services\Concrete\SharePointUserManagerService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-theme.css" />
@@ -221,7 +224,6 @@
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\About.cshtml" />
-    <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Admin\Index.cshtml" />
     <Content Include="Views\Account\Create.cshtml" />

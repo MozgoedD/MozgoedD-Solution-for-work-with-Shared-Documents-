@@ -1,5 +1,7 @@
 ﻿using ClientWebApp.Infrastructure;
 using ClientWebApp.Models;
+using ClientWebApp.Services.Abstract;
+using ClientWebApp.Services.Concrete;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using System;
@@ -22,7 +24,7 @@ namespace ClientWebApp.Controllers
 
         public async Task<ActionResult> ApprovePage(string id)
         {
-            AppUser user = await UserManager.FindByIdAsync(id);
+            var user = await UserManager.FindByIdAsync(id);
             if (user != null)
             {
                 return View(user);
@@ -46,12 +48,12 @@ namespace ClientWebApp.Controllers
                 if (user != null)
                 {
                     user.IsApproved = true;
-                    IdentityResult result = await UserManager.UpdateAsync(user);
+                    var result = await UserManager.UpdateAsync(user);
                     if (result.Succeeded)
                     {
-                        SharePointManager.ApproveUser(user);
-                        EmailManager.Send("Your account is now approved!",
-                            $"Your account is now approved!\nYour password is: {user.RawPassword}", user.Email);
+                        spUserManager.ApproveUser(user);
+                        //EmailManager.Send("Your account is now approved!",
+                        //    $"Your account is now approved!\nYour password is: {user.RawPassword}", user.Email);
                         return RedirectToAction("Index");
                     }
                     else
@@ -70,16 +72,16 @@ namespace ClientWebApp.Controllers
         [HttpPost]
         public async Task<ActionResult> Reject(string id)
         {
-            AppUser user = await UserManager.FindByIdAsync(id);
+            var user = await UserManager.FindByIdAsync(id);
             if (user != null)
             {
-                string userMail = user.Email;
-                IdentityResult result = await UserManager.DeleteAsync(user);
+                var userMail = user.Email;
+                var result = await UserManager.DeleteAsync(user);
                 if (result.Succeeded)
                 {
-                    SharePointManager.DeleteUser(user);
-                    EmailManager.Send("Your account is not approved!",
-                        $"Your account is not approved! Please try to create a new request", userMail);
+                    spUserManager.DeleteUser(user);
+                    //EmailManager.Send("Your account is not approved!",
+                    //    $"Your account is not approved! Please try to create a new request", userMail);
                     return RedirectToAction("Index");
                 }
                 else
@@ -96,16 +98,16 @@ namespace ClientWebApp.Controllers
         [HttpPost]
         public async Task<ActionResult> Delete(string id)
         {
-            AppUser user = await UserManager.FindByIdAsync(id);
+            var user = await UserManager.FindByIdAsync(id);
             if (user != null)
             {
-                string userMail = user.Email;
-                IdentityResult result = await UserManager.DeleteAsync(user);
+                var userMail = user.Email;
+                var result = await UserManager.DeleteAsync(user);
                 if (result.Succeeded)
                 {
-                    SharePointManager.DeleteUser(user);
-                    EmailManager.Send("Your account has been deleted!",
-                        $"Your account has been deleted! Please try to create a new request", userMail);
+                    spUserManager.DeleteUser(user);
+                    //EmailManager.Send("Your account has been deleted!",
+                    //    $"Your account has been deleted! Please try to create a new request", userMail);
                     return RedirectToAction("Index");
                 }
                 else
@@ -121,12 +123,19 @@ namespace ClientWebApp.Controllers
 
         private void AddErrorsFromResult(IdentityResult result)
         {
-            foreach (string error in result.Errors)
+            foreach (var error in result.Errors)
             {
                 ModelState.AddModelError("", error);
             }
         }
 
+        private ISharePointUserManagerService spUserManager
+        {
+            get
+            {
+                return new SharePointUserManagerService();
+            }
+        }
 
         private AppUserManager UserManager
         {

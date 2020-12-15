@@ -1,5 +1,7 @@
 ﻿using ClientWebApp.Infrastructure;
 using ClientWebApp.Models;
+using ClientWebApp.Services.Abstract;
+using ClientWebApp.Services.Concrete;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
@@ -37,7 +39,7 @@ namespace ClientWebApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                AppUser user = new AppUser
+                var user = new AppUser
                 {
                     UserName = model.Email,
                     Email = model.Email,
@@ -54,7 +56,7 @@ namespace ClientWebApp.Controllers
                     RawPassword = System.Web.Security.Membership.GeneratePassword(5, 0)
                 };
 
-                IdentityResult result = await UserManager.CreateAsync(user, user.RawPassword);
+                var result = await UserManager.CreateAsync(user, user.RawPassword);
 
                 if (result.Succeeded)
                 {
@@ -65,7 +67,7 @@ namespace ClientWebApp.Controllers
                     }
                     else
                     {
-                        user.SharePointId = SharePointManager.AddUserToSpList(user);
+                        user.SharePointId = spUserManager.AddUserToSpList(user);
                         result = await UserManager.UpdateAsync(user);
                         if (!result.Succeeded)
                         {
@@ -104,7 +106,7 @@ namespace ClientWebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginViewModel details, string returnUrl)
         {
-            AppUser user = await UserManager.FindAsync(details.Name, details.Password);
+            var user = await UserManager.FindAsync(details.Name, details.Password);
             if (user == null)
             {
                 ModelState.AddModelError("", "Invalid Username or Password");
@@ -144,9 +146,17 @@ namespace ClientWebApp.Controllers
 
         private void AddErrorsFromResult(IdentityResult result)
         {
-            foreach (string error in result.Errors)
+            foreach (var error in result.Errors)
             {
                 ModelState.AddModelError("", error);
+            }
+        }
+
+        private ISharePointUserManagerService spUserManager
+        {
+            get
+            {
+                return new SharePointUserManagerService();
             }
         }
 
