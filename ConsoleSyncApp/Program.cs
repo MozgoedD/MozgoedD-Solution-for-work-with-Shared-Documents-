@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System;
-using ConsoleSyncApp.Classes;
 using System.Net;
 using System.Threading.Tasks;
 using System.Threading;
@@ -10,6 +9,7 @@ using System.Security;
 using System.IO;
 using ConsoleSyncApp.Models;
 using System.Collections.Generic;
+using ConsoleSyncApp.Services.Concrete;
 
 namespace ConsoleSyncApp
 {
@@ -19,38 +19,34 @@ namespace ConsoleSyncApp
         {
             if (args.Length != 1)
             {
-                Console.WriteLine("Please enter a link to cinfig base");
+                Console.WriteLine("Please enter a link to the config file");
                 return 0;
             }
+            var configPath = args[0];
+            var userSettingsBuilderManager = new UserSettingsBuilderFromJson(configPath);
+            var settings = userSettingsBuilderManager.GetUserSettings();
+            var spContextCredentialsServiceManager = new SpContextCredentialsService(settings.SpAccountLogin, settings.SpAccountPassword);
+            var syncWithDbRepoServiceManager = new SyncWithDbRepo();
+            var spSyncProcedureManager = new SyncProcedure(spContextCredentialsServiceManager, syncWithDbRepoServiceManager,
+                settings.SpSiteUrl, settings.SpSiteSharedDocsName);
 
-            string configPath = args[0];
-
-            IConfigurationRoot configuration = new ConfigurationBuilder()
-                .AddJsonFile(configPath)
-                .Build();
-
-            var settings = new Settings();
-            configuration.Bind(settings);
-
-
-
-            Console.WriteLine("Program starting..\nTo end press any button");
-
-            StartSync(settings);
-
+            Console.WriteLine("Program starting...\nPress any button to end");
+            StartSync(spSyncProcedureManager);
             Console.ReadKey();
-
             return 1;
         }
 
-        static async void StartSync(Settings settings)
+        static async void StartSync(SyncProcedure syncProcedureManager)
         {
             await Task.Run(() =>
             {
                 while (true)
                 {
-                    SyncProcess(settings);
-                    Thread.Sleep(2 * 60 * 1000);
+                    Console.WriteLine($"New next synchronization procedure according to shedule {DateTime.Now}");
+                    syncProcedureManager.StartSyncProcedure();
+
+                    // Waiting in minutes before next synchronization procedure
+                    Thread.Sleep(1 * 60000);
                 }
             });
         }
@@ -59,7 +55,6 @@ namespace ConsoleSyncApp
         {
             try
             {
-                Console.WriteLine($"Sync process started accrotding to shedule {DateTime.Now}");
                 using (var clientContext = new ClientContext(settings.SpSiteUrl))
                 {
                     SecureString secPass = new SecureString();
@@ -111,7 +106,7 @@ namespace ConsoleSyncApp
                                 AppFileModel fileDB = filesContext.Files.Find(fileInDB.Id);
                                 filesContext.Files.Remove(fileDB);
                                 filesContext.SaveChanges();
-                                Console.WriteLine($"{fileInDB.Name} has been deleted!");
+                                Console.WriteLine($"{fileInDB.Name} has been deleted from mvc app database!");
                             }
                         }
                         foreach (AppFileModel fileInSP in filesInSP)
@@ -120,7 +115,7 @@ namespace ConsoleSyncApp
                             {
                                 filesContext.Files.Add(fileInSP);
                                 filesContext.SaveChanges();
-                                Console.WriteLine($"{fileInSP.Name} has been added!");
+                                Console.WriteLine($"{fileInSP.Name} has been added to mvc app database!");
                             }
                             else
                             {
@@ -130,7 +125,7 @@ namespace ConsoleSyncApp
                                     filesContext.Files.Remove(fileToUpdate);
                                     filesContext.Files.Add(fileInSP);
                                     filesContext.SaveChanges();
-                                    Console.WriteLine($"{fileInSP.Name} has been updated!");
+                                    Console.WriteLine($"{fileInSP.Name} has been updated in mvc app database!");
                                 }
                             }
                         }

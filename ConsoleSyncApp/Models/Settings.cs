@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ConsoleSyncApp.Classes
+namespace ConsoleSyncApp.Models
 {
     public class Settings
     {
