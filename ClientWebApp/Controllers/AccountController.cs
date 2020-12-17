@@ -115,7 +115,7 @@ namespace ClientWebApp.Controllers
             {
                 if (user.IsApproved)
                 {
-                    ClaimsIdentity ident = await UserManager.CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie);
+                    var ident = await UserManager.CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie);
 
                     AuthManager.SignOut();
                     AuthManager.SignIn(new AuthenticationProperties

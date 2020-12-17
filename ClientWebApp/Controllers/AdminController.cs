@@ -44,7 +44,7 @@ namespace ClientWebApp.Controllers
             }
             else
             {
-                AppUser user = await UserManager.FindByIdAsync(id);
+                var user = await UserManager.FindByIdAsync(id);
                 if (user != null)
                 {
                     user.IsApproved = true;

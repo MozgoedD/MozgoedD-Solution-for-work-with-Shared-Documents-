@@ -16,22 +16,22 @@ namespace ClientWebApp.Migrations
             AutomaticMigrationsEnabled = true;
         }
 
-        protected override void Seed(ClientWebApp.Infrastructure.AppIdentityDbContext context)
+        protected override void Seed(AppIdentityDbContext context)
         {
-            AppUserManager userMgr = new AppUserManager(new UserStore<AppUser>(context));
-            AppRoleManager roleMgr = new AppRoleManager(new RoleStore<AppRole>(context));
+            var userMgr = new AppUserManager(new UserStore<AppUser>(context));
+            var roleMgr = new AppRoleManager(new RoleStore<AppRole>(context));
 
-            string roleName = "Administrators";
-            string userName = "Admin";
-            string password = "mypassword";
-            string email = "admin@professorweb.ru";
+            var roleName = "Administrators";
+            var userName = "Admin";
+            var password = "mypassword";
+            var email = "admin@professorweb.ru";
 
             if (!roleMgr.RoleExists(roleName))
             {
                 roleMgr.Create(new AppRole(roleName));
             }
 
-            AppUser user = userMgr.FindByName(userName);
+            var user = userMgr.FindByName(userName);
 
             if (user == null)
             {

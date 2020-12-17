@@ -41,7 +41,7 @@ namespace ClientWebApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                AppFileModel file = new AppFileModel
+                var file = new AppFileModel
                 {
                     Name = Path.GetFileName(fileModel.File.FileName),
                     AuthorId = fileModel.AuthorId,

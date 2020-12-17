@@ -16,20 +16,16 @@ namespace ClientWebApp.Infrastructure
             {
                 return new MvcHtmlString("SharePoint Author");
             }
-
-            AppUserManager UserManager = HttpContext.Current.GetOwinContext().GetUserManager<AppUserManager>();
-
+            var UserManager = HttpContext.Current.GetOwinContext().GetUserManager<AppUserManager>();
             try
             {
-                MvcHtmlString result = new MvcHtmlString(UserManager.FindByIdAsync(id).Result.UserName);
+                var result = new MvcHtmlString(UserManager.FindByIdAsync(id).Result.UserName);
+                return result;
             }
-
-            catch (System.NullReferenceException)
+            catch (NullReferenceException)
             {
                 return new MvcHtmlString("User No Exist");
             }
-
-            return new MvcHtmlString(UserManager.FindByIdAsync(id).Result.UserName);
         }
 
         //public static MvcHtmlString GetCurrentUserName(this HtmlHelper html)
