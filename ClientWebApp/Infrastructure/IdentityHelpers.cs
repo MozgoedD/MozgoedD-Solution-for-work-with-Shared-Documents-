@@ -27,14 +27,5 @@ namespace ClientWebApp.Infrastructure
                 return new MvcHtmlString("User No Exist");
             }
         }
-
-        //public static MvcHtmlString GetCurrentUserName(this HtmlHelper html)
-        //{
-        //    AppUserManager UserManager = HttpContext.Current.GetOwinContext().GetUserManager<AppUserManager>();
-
-        //    MvcHtmlString userName = new MvcHtmlString(UserManager.FindByName(HttpContext.User.Identity.Name));
-
-        //    return userName;
-        //}
     }
 }

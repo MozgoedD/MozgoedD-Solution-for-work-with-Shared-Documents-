@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ClientWebApp.Services.Abstract
 {
-    interface IEmailService
+    public interface IEmailService
     {
         void SendEmail(string subject, string messageText, string recipientAddress);
     }

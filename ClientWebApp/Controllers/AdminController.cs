@@ -18,6 +18,14 @@ namespace ClientWebApp.Controllers
     [Authorize(Roles = "Administrators")]
     public class AdminController : Controller
     {
+        IEmailService _emailManager;
+
+        //public AdminController() {}
+
+        public AdminController(IEmailService emailManager)
+        {
+            _emailManager = emailManager;
+        }
         public ActionResult Index()
         {
             return View(UserManager.Users);
@@ -53,7 +61,7 @@ namespace ClientWebApp.Controllers
                     if (result.Succeeded)
                     {
                         SpUserManager.ApproveUser(user);
-                        EmailManager.SendEmail("Your account is now approved!",
+                        _emailManager.SendEmail("Your account is now approved!",
                             $"Your account is now approved!\nYour password is: {user.RawPassword}", user.Email);
                         return RedirectToAction("Index");
                     }
@@ -81,7 +89,7 @@ namespace ClientWebApp.Controllers
                 if (result.Succeeded)
                 {
                     SpUserManager.DeleteUser(user);
-                    EmailManager.SendEmail("Your account is not approved!",
+                    _emailManager.SendEmail("Your account is not approved!",
                         "Your account is not approved! Please try to create a new request", userMail);
                     return RedirectToAction("Index");
                 }
@@ -107,7 +115,7 @@ namespace ClientWebApp.Controllers
                 if (result.Succeeded)
                 {
                     SpUserManager.DeleteUser(user);
-                    EmailManager.SendEmail("Your account has been deleted!",
+                    _emailManager.SendEmail("Your account has been deleted!",
                         "Your account has been deleted! Please try to create a new request", userMail);
                     return RedirectToAction("Index");
                 }
@@ -127,14 +135,6 @@ namespace ClientWebApp.Controllers
             foreach (var error in result.Errors)
             {
                 ModelState.AddModelError("", error);
-            }
-        }
-
-        private IEmailService EmailManager
-        {
-            get
-            {
-                return new EmailService();
             }
         }
 
