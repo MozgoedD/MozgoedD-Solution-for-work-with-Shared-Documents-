@@ -6,6 +6,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -51,9 +52,9 @@ namespace ClientWebApp.Controllers
                     var result = await UserManager.UpdateAsync(user);
                     if (result.Succeeded)
                     {
-                        spUserManager.ApproveUser(user);
-                        //EmailManager.Send("Your account is now approved!",
-                        //    $"Your account is now approved!\nYour password is: {user.RawPassword}", user.Email);
+                        SpUserManager.ApproveUser(user);
+                        EmailManager.SendEmail("Your account is now approved!",
+                            $"Your account is now approved!\nYour password is: {user.RawPassword}", user.Email);
                         return RedirectToAction("Index");
                     }
                     else
@@ -79,9 +80,9 @@ namespace ClientWebApp.Controllers
                 var result = await UserManager.DeleteAsync(user);
                 if (result.Succeeded)
                 {
-                    spUserManager.DeleteUser(user);
-                    //EmailManager.Send("Your account is not approved!",
-                    //    $"Your account is not approved! Please try to create a new request", userMail);
+                    SpUserManager.DeleteUser(user);
+                    EmailManager.SendEmail("Your account is not approved!",
+                        "Your account is not approved! Please try to create a new request", userMail);
                     return RedirectToAction("Index");
                 }
                 else
@@ -105,9 +106,9 @@ namespace ClientWebApp.Controllers
                 var result = await UserManager.DeleteAsync(user);
                 if (result.Succeeded)
                 {
-                    spUserManager.DeleteUser(user);
-                    //EmailManager.Send("Your account has been deleted!",
-                    //    $"Your account has been deleted! Please try to create a new request", userMail);
+                    SpUserManager.DeleteUser(user);
+                    EmailManager.SendEmail("Your account has been deleted!",
+                        "Your account has been deleted! Please try to create a new request", userMail);
                     return RedirectToAction("Index");
                 }
                 else
@@ -129,7 +130,15 @@ namespace ClientWebApp.Controllers
             }
         }
 
-        private ISharePointUserManagerService spUserManager
+        private IEmailService EmailManager
+        {
+            get
+            {
+                return new EmailService();
+            }
+        }
+
+        private ISharePointUserManagerService SpUserManager
         {
             get
             {

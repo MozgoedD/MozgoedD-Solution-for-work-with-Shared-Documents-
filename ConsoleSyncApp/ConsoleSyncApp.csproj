@@ -190,9 +190,11 @@
     <Compile Include="Models\AppFileModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\Abstract\ISharedDocsFilesGetter.cs" />
     <Compile Include="Services\Abstract\ISpContextCredentialsService.cs" />
     <Compile Include="Services\Abstract\ISyncWithDbRepo.cs" />
     <Compile Include="Services\Abstract\IUserSettingsBuilder.cs" />
+    <Compile Include="Services\Concrete\SharedDocsFilesGetter.cs" />
     <Compile Include="Services\Concrete\SpContextCredentialsService.cs" />
     <Compile Include="Services\Concrete\SyncWithDbRepo.cs" />
     <Compile Include="Services\Concrete\UserSettingsBuilderFromJson.cs" />

@@ -10,8 +10,6 @@ namespace ClientWebApp.Models
     {
         public string AuthorId { get; set; }
         [Required]
-        public string Name { get; set; }
-        [Required]
         public HttpPostedFileBase File { get; set; }
     }
 }
