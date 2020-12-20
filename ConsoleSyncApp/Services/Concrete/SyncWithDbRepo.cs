@@ -1,5 +1,6 @@
 ﻿using ConsoleSyncApp.Models;
 using ConsoleSyncApp.Services.Abstract;
+using SharePointDAL.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

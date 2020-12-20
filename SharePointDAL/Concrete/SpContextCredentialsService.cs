@@ -1,4 +1,4 @@
-﻿using ConsoleSyncApp.Services.Abstract;
+﻿using SharePointDAL.Abstract;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,9 +7,9 @@ using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleSyncApp.Services.Concrete
+namespace SharePointDAL.Concrete
 {
-    class SpContextCredentialsService : ISpContextCredentialsService
+    public class SpContextCredentialsService : ISpContextCredentialsService
     {
         public NetworkCredential SpCredentials { get; set; }
 

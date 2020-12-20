@@ -5,10 +5,10 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleSyncApp.Services.Abstract
+namespace SharePointDAL.Abstract
 {
     public interface ISpContextCredentialsService
     {
-        NetworkCredential SpCredentials {get; set;}
+        NetworkCredential SpCredentials { get; set; }
     }
 }

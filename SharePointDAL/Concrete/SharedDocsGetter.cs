@@ -1,25 +1,25 @@
-﻿using ConsoleSyncApp.Models;
-using ConsoleSyncApp.Services.Abstract;
-using Microsoft.SharePoint.Client;
+﻿using SharePointDAL.Abstract;
+using SharePointDAL.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Microsoft.SharePoint.Client;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleSyncApp.Services.Concrete
+namespace SharePointDAL.Concrete
 {
-    public class SharedDocsFilesGetter : ISharedDocsFilesGetter
+    public class SharedDocsGetter : ISharedDocsGetter
     {
-        ISpContextCredentialsService spContextCredentialsServiceManager;
+        ISpContextCredentialsService _spContextCredentialsServiceManager;
         string SpSiteUrl;
         string SpSiteSharedDocsName;
 
-        public SharedDocsFilesGetter(ISpContextCredentialsService spContextCredentialsServiceManager,
+        public SharedDocsGetter(ISpContextCredentialsService spContextCredentialsServiceManager,
             string SpSiteUrl, string SpSiteSharedDocsName)
         {
-            this.spContextCredentialsServiceManager = spContextCredentialsServiceManager;
+            _spContextCredentialsServiceManager = spContextCredentialsServiceManager;
             this.SpSiteUrl = SpSiteUrl;
             this.SpSiteSharedDocsName = SpSiteSharedDocsName;
         }
@@ -28,7 +28,7 @@ namespace ConsoleSyncApp.Services.Concrete
         {
             using (var clientContext = new ClientContext(SpSiteUrl))
             {
-                clientContext.Credentials = spContextCredentialsServiceManager.SpCredentials;
+                clientContext.Credentials = _spContextCredentialsServiceManager.SpCredentials;
                 var web = clientContext.Web;
                 var sharedDocuments = web.Lists.GetByTitle(SpSiteSharedDocsName);
                 var filesCollection = sharedDocuments.RootFolder.Files;

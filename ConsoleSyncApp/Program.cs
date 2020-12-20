@@ -10,6 +10,12 @@ using System.IO;
 using ConsoleSyncApp.Models;
 using System.Collections.Generic;
 using ConsoleSyncApp.Services.Concrete;
+using Ninject;
+using System.Reflection;
+using ConsoleSyncApp.Services.Abstract;
+using Ninject.Parameters;
+using SharePointDAL.Abstract;
+using SharePointDAL.Concrete;
 
 namespace ConsoleSyncApp
 {
@@ -23,36 +29,32 @@ namespace ConsoleSyncApp
                 return 0;
             }
             var configPath = args[0];
-            var userSettingsBuilderManager = new UserSettingsBuilderFromJson(configPath);
+
+            var kernel = new StandardKernel();
+            kernel.Load(Assembly.GetExecutingAssembly());
+
+            var userSettingsBuilderManager = kernel.Get<IUserSettignsBuilder>(
+                new ConstructorArgument("configPath", configPath));
             var settings = userSettingsBuilderManager.GetUserSettings();
 
-            var spContextCredentialsServiceManager = new SpContextCredentialsService(settings.SpAccountLogin, settings.SpAccountPassword);
-            var syncWithDbRepoServiceManager = new SyncWithDbRepo();
-            var sharedDocsFilesGetterManager = new SharedDocsFilesGetter(spContextCredentialsServiceManager, settings.SpSiteUrl,
-                settings.SpSiteSharedDocsName);
+            var spContextCredentialsServiceManager = kernel.Get<ISpContextCredentialsService>(
+                new ConstructorArgument("SpAccountLogin", settings.SpAccountLogin),
+                new ConstructorArgument("SpAccountPassword", settings.SpAccountPassword));
+
+            var syncWithDbRepoServiceManager = kernel.Get<ISyncWithDbRepo>();
+
+            var sharedDocsFilesGetterManager = kernel.Get<SharedDocsGetter>(
+                new ConstructorArgument("spContextCredentialsServiceManager", spContextCredentialsServiceManager),
+                new ConstructorArgument("SpSiteUrl", settings.SpSiteUrl),
+                new ConstructorArgument("SpSiteSharedDocsName", settings.SpSiteSharedDocsName));
 
             var spSyncProcedureManager = new SyncProcedure(spContextCredentialsServiceManager, syncWithDbRepoServiceManager,
                 sharedDocsFilesGetterManager, settings.SpSiteUrl);
 
             Console.WriteLine("Program starting...\nPress any button to end");
-            StartSync(spSyncProcedureManager);
+            spSyncProcedureManager.StartSync();
             Console.ReadKey();
             return 1;
-        }
-
-        static async void StartSync(SyncProcedure syncProcedureManager)
-        {
-            await Task.Run(() =>
-            {
-                while (true)
-                {
-                    Console.WriteLine($"New next synchronization procedure according to shedule {DateTime.Now}");
-                    syncProcedureManager.StartSyncProcedure();
-
-                    // Waiting in minutes before next synchronization procedure
-                    Thread.Sleep(1 * 60000);
-                }
-            });
         }
     }
 }

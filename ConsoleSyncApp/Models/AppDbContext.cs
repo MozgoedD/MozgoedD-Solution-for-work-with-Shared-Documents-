@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Data.Entity;
+using SharePointDAL.Models;
 
 namespace ConsoleSyncApp.Models
 {

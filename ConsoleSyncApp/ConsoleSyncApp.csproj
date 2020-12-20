@@ -123,6 +123,9 @@
     <Reference Include="Microsoft.SharePoint.Client.WorkflowServices, Version=16.1.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.SharePointOnline.CSOM.16.1.20720.12000\lib\net45\Microsoft.SharePoint.Client.WorkflowServices.dll</HintPath>
     </Reference>
+    <Reference Include="Ninject, Version=3.3.4.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.3.3.4\lib\net45\Ninject.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
@@ -188,14 +191,11 @@
     <Compile Include="Models\Settings.cs" />
     <Compile Include="Models\AppDbContext.cs" />
     <Compile Include="Models\AppFileModel.cs" />
+    <Compile Include="NinjectBindings.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\Abstract\ISharedDocsFilesGetter.cs" />
-    <Compile Include="Services\Abstract\ISpContextCredentialsService.cs" />
     <Compile Include="Services\Abstract\ISyncWithDbRepo.cs" />
     <Compile Include="Services\Abstract\IUserSettingsBuilder.cs" />
-    <Compile Include="Services\Concrete\SharedDocsFilesGetter.cs" />
-    <Compile Include="Services\Concrete\SpContextCredentialsService.cs" />
     <Compile Include="Services\Concrete\SyncWithDbRepo.cs" />
     <Compile Include="Services\Concrete\UserSettingsBuilderFromJson.cs" />
     <Compile Include="SyncProcedure.cs" />
@@ -207,6 +207,12 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Classes\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SharePointDAL\SharePointDAL.csproj">
+      <Project>{290d5f26-11bc-4cd0-800c-22b8ae28781b}</Project>
+      <Name>SharePointDAL</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
