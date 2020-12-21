@@ -1,13 +1,10 @@
 ﻿using ConsoleSyncApp.Services.Abstract;
 using ConsoleSyncApp.Services.Concrete;
 using Ninject.Modules;
-using SharePointDAL.Abstract;
-using SharePointDAL.Concrete;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using DAL.SharePoint.Abstract;
+using DAL.SharePoint.Concrete;
+using SharePointDAL.DataBase.Abstract;
+using SharePointDAL.DataBase.Concrete;
 
 namespace ConsoleSyncApp
 {
@@ -15,7 +12,7 @@ namespace ConsoleSyncApp
     {
         public override void Load()
         {
-            Bind<ISyncWithDbRepo>().To<SyncWithDbRepo>();
+            Bind<ISyncSharedDocsWithDbRepo>().To<SyncSharedDocsWithDbRepo>();
             Bind<IUserSettignsBuilder>().To<UserSettingsBuilderFromJson>();
             Bind<ISharedDocsGetter>().To<SharedDocsGetter>();
             Bind<ISpContextCredentialsService>().To<SpContextCredentialsService>();

@@ -1,4 +1,4 @@
-﻿using SharePointDAL.Abstract;
+﻿using DAL.SharePoint.Abstract;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SharePointDAL.Concrete
+namespace DAL.SharePoint.Concrete
 {
     public class SpContextCredentialsService : ISpContextCredentialsService
     {

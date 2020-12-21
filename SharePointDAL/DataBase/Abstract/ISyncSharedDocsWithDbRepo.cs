@@ -1,14 +1,13 @@
-﻿using ConsoleSyncApp.Models;
-using SharePointDAL.Models;
+﻿using DAL.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleSyncApp.Services.Abstract
+namespace SharePointDAL.DataBase.Abstract
 {
-    public interface ISyncWithDbRepo
+    public interface ISyncSharedDocsWithDbRepo
     {
         void UpdateFilesInDb(List<AppFileModel> filesInSp);
     }

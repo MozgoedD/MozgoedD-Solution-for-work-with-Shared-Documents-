@@ -189,14 +189,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\Settings.cs" />
-    <Compile Include="Models\AppDbContext.cs" />
-    <Compile Include="Models\AppFileModel.cs" />
     <Compile Include="NinjectBindings.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\Abstract\ISyncWithDbRepo.cs" />
     <Compile Include="Services\Abstract\IUserSettingsBuilder.cs" />
-    <Compile Include="Services\Concrete\SyncWithDbRepo.cs" />
     <Compile Include="Services\Concrete\UserSettingsBuilderFromJson.cs" />
     <Compile Include="SyncProcedure.cs" />
   </ItemGroup>
@@ -209,9 +205,9 @@
     <Folder Include="Classes\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SharePointDAL\SharePointDAL.csproj">
+    <ProjectReference Include="..\SharePointDAL\DAL.csproj">
       <Project>{290d5f26-11bc-4cd0-800c-22b8ae28781b}</Project>
-      <Name>SharePointDAL</Name>
+      <Name>DAL</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

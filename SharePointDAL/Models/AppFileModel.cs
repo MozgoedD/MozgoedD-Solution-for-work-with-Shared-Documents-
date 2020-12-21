@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SharePointDAL.Models
+namespace DAL.Models
 {
     public class AppFileModel
     {

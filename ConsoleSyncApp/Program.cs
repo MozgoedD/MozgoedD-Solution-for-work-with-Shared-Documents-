@@ -1,21 +1,12 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System;
-using System.Net;
-using System.Threading.Tasks;
-using System.Threading;
-using Microsoft.SharePoint.Client;
-using System.Linq;
-using System.Security;
-using System.IO;
-using ConsoleSyncApp.Models;
-using System.Collections.Generic;
-using ConsoleSyncApp.Services.Concrete;
 using Ninject;
 using System.Reflection;
 using ConsoleSyncApp.Services.Abstract;
 using Ninject.Parameters;
-using SharePointDAL.Abstract;
-using SharePointDAL.Concrete;
+using DAL.SharePoint.Abstract;
+using DAL.SharePoint.Concrete;
+using SharePointDAL.DataBase.Abstract;
 
 namespace ConsoleSyncApp
 {
@@ -41,7 +32,7 @@ namespace ConsoleSyncApp
                 new ConstructorArgument("SpAccountLogin", settings.SpAccountLogin),
                 new ConstructorArgument("SpAccountPassword", settings.SpAccountPassword));
 
-            var syncWithDbRepoServiceManager = kernel.Get<ISyncWithDbRepo>();
+            var syncWithDbRepoServiceManager = kernel.Get<ISyncSharedDocsWithDbRepo>();
 
             var sharedDocsFilesGetterManager = kernel.Get<SharedDocsGetter>(
                 new ConstructorArgument("spContextCredentialsServiceManager", spContextCredentialsServiceManager),

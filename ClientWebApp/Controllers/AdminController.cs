@@ -20,12 +20,11 @@ namespace ClientWebApp.Controllers
     {
         IEmailService _emailManager;
 
-        //public AdminController() {}
-
         public AdminController(IEmailService emailManager)
         {
             _emailManager = emailManager;
         }
+
         public ActionResult Index()
         {
             return View(UserManager.Users);

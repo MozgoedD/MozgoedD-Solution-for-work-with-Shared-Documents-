@@ -5,7 +5,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SharePointDAL.Abstract
+namespace DAL.SharePoint.Abstract
 {
     public interface ISpContextCredentialsService
     {

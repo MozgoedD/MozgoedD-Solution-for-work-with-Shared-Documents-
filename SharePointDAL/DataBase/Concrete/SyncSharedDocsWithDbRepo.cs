@@ -1,5 +1,5 @@
-﻿using ConsoleSyncApp.Models;
-using ConsoleSyncApp.Services.Abstract;
+﻿using DAL.Models;
+using SharePointDAL.DataBase.Abstract;
 using SharePointDAL.Models;
 using System;
 using System.Collections.Generic;
@@ -7,9 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleSyncApp.Services.Concrete
+namespace SharePointDAL.DataBase.Concrete
 {
-    public class SyncWithDbRepo : ISyncWithDbRepo
+    public class SyncSharedDocsWithDbRepo : ISyncSharedDocsWithDbRepo
     {
         public void UpdateFilesInDb(List<AppFileModel> filesInSP)
         {

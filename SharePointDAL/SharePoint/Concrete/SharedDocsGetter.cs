@@ -1,5 +1,5 @@
-﻿using SharePointDAL.Abstract;
-using SharePointDAL.Models;
+﻿using DAL.SharePoint.Abstract;
+using DAL.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SharePointDAL.Concrete
+namespace DAL.SharePoint.Concrete
 {
     public class SharedDocsGetter : ISharedDocsGetter
     {

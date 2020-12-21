@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientWebApp", "ClientWebAp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleSyncApp", "ConsoleSyncApp\ConsoleSyncApp.csproj", "{26B7952D-A615-49A9-AA82-43373EF104FE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharePointDAL", "SharePointDAL\SharePointDAL.csproj", "{290D5F26-11BC-4CD0-800C-22B8AE28781B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DAL", "SharePointDAL\DAL.csproj", "{290D5F26-11BC-4CD0-800C-22B8AE28781B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

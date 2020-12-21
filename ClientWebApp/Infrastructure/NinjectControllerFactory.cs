@@ -1,8 +1,11 @@
 ﻿using ClientWebApp.Services.Abstract;
 using ClientWebApp.Services.Concrete;
+using DAL.SharePoint.Abstract;
+using DAL.SharePoint.Concrete;
 using Ninject;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -25,6 +28,11 @@ namespace ClientWebApp.Infrastructure
         private void AddBindings()
         {
             ninjectKernel.Bind<IEmailService>().To<EmailService>();
+            ninjectKernel.Bind<ISharedDocsCDService>().To<SharedDocsCDService>()
+                .WithConstructorArgument("SpSiteUrl", ConfigurationManager.AppSettings["SpSiteUrl"])
+                .WithConstructorArgument("SpAccountLogin", ConfigurationManager.AppSettings["SpAccountLogin"])
+                .WithConstructorArgument("SpAccountPassword", ConfigurationManager.AppSettings["SpAccountPassword"])
+                .WithConstructorArgument("SpSiteSharedDocsName", ConfigurationManager.AppSettings["SpSiteSharedDocsName"]);
         }
     }
 }

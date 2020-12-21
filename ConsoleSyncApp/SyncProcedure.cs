@@ -1,27 +1,20 @@
-﻿using ConsoleSyncApp.Models;
-using ConsoleSyncApp.Services.Abstract;
-using Microsoft.SharePoint.Client;
-using SharePointDAL.Abstract;
+﻿using Microsoft.SharePoint.Client;
+using DAL.SharePoint.Abstract;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Security;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using SharePointDAL.DataBase.Abstract;
 
 namespace ConsoleSyncApp
 {
     public class SyncProcedure
     {
         ISpContextCredentialsService _spContextCredentialsServiceManager;
-        ISyncWithDbRepo _syncWithDbRepoManager;
+        ISyncSharedDocsWithDbRepo _syncWithDbRepoManager;
         ISharedDocsGetter _sharedDocsGetter;
 
         string SpSiteUrl;
-        public SyncProcedure(ISpContextCredentialsService spContextCredentialsServiceManager, ISyncWithDbRepo syncWithDbRepoManager,
+        public SyncProcedure(ISpContextCredentialsService spContextCredentialsServiceManager, ISyncSharedDocsWithDbRepo syncWithDbRepoManager,
             ISharedDocsGetter sharedDocsFilesGetterManager, string SpSiteUrl)
         {
             _spContextCredentialsServiceManager = spContextCredentialsServiceManager;

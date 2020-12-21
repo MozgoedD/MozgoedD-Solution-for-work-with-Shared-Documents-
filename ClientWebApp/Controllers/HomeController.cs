@@ -1,9 +1,9 @@
 ﻿using ClientWebApp.Infrastructure;
 using ClientWebApp.Models;
-using ClientWebApp.Services.Abstract;
-using ClientWebApp.Services.Concrete;
+using DAL.SharePoint.Abstract;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
+using DAL.SharePoint.Concrete;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,6 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using DAL.Models;
 
 namespace ClientWebApp.Controllers
 {
@@ -18,6 +19,12 @@ namespace ClientWebApp.Controllers
     public class HomeController : Controller
     {
         AppDbContext filesContext = new AppDbContext();
+        ISharedDocsCDService _sharedDocsManager;
+
+        public HomeController(ISharedDocsCDService sharedDocsManager)
+        {
+            _sharedDocsManager = sharedDocsManager;
+        }
 
         public ActionResult Index()
         {
@@ -53,7 +60,7 @@ namespace ClientWebApp.Controllers
                     var uploadedFile = new byte[fileModel.File.InputStream.Length];
                     fileModel.File.InputStream.Read(uploadedFile, 0, uploadedFile.Length);
                     file.File = uploadedFile.ToArray();
-                    spDocsManager.UploadFileToSP(file);
+                    _sharedDocsManager.UploadFileToSP(file);
 
                     filesContext.Files.Add(file);
                     filesContext.SaveChanges();
@@ -64,14 +71,14 @@ namespace ClientWebApp.Controllers
                     var user = CurrentUser;
                     if (user.Id == fileInDb.AuthorId || UserManager.IsInRole(user.Id, "Administrators"))
                     {
-                        spDocsManager.DeleteFileFromSP(fileInDb);
+                        _sharedDocsManager.DeleteFileFromSP(fileInDb);
                         filesContext.Files.Remove(fileInDb);
                         filesContext.SaveChanges();
 
                         var uploadedFile = new byte[fileModel.File.InputStream.Length];
                         fileModel.File.InputStream.Read(uploadedFile, 0, uploadedFile.Length);
                         file.File = uploadedFile.ToArray();
-                        spDocsManager.UploadFileToSP(file);
+                        _sharedDocsManager.UploadFileToSP(file);
 
                         filesContext.Files.Add(file);
                         filesContext.SaveChanges();
@@ -105,7 +112,7 @@ namespace ClientWebApp.Controllers
             {
                 if (user.Id == file.AuthorId || UserManager.IsInRole(user.Id, "Administrators"))
                 {
-                    spDocsManager.DeleteFileFromSP(file);
+                    _sharedDocsManager.DeleteFileFromSP(file);
                     filesContext.Files.Remove(file);
                     filesContext.SaveChanges();
                     return RedirectToAction("Index");
@@ -131,14 +138,6 @@ namespace ClientWebApp.Controllers
             else
             {
                 return RedirectToAction("Index");
-            }
-        }
-
-        private ISharePointSharedDocsManagerService spDocsManager
-        {
-            get
-            {
-                return new SharePointSharedDocsManagerService();
             }
         }
 
