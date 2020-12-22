@@ -19,10 +19,12 @@ namespace ClientWebApp.Controllers
     public class AdminController : Controller
     {
         IEmailService _emailManager;
+        ISharePointUserManagerService _spUserManager;
 
-        public AdminController(IEmailService emailManager)
+        public AdminController(IEmailService emailManager, ISharePointUserManagerService spUserManager)
         {
             _emailManager = emailManager;
+            _spUserManager = spUserManager;
         }
 
         public ActionResult Index()
@@ -59,7 +61,7 @@ namespace ClientWebApp.Controllers
                     var result = await UserManager.UpdateAsync(user);
                     if (result.Succeeded)
                     {
-                        SpUserManager.ApproveUser(user);
+                        _spUserManager.ApproveUser(user);
                         _emailManager.SendEmail("Your account is now approved!",
                             $"Your account is now approved!\nYour password is: {user.RawPassword}", user.Email);
                         return RedirectToAction("Index");
@@ -87,7 +89,7 @@ namespace ClientWebApp.Controllers
                 var result = await UserManager.DeleteAsync(user);
                 if (result.Succeeded)
                 {
-                    SpUserManager.DeleteUser(user);
+                    _spUserManager.DeleteUser(user);
                     _emailManager.SendEmail("Your account is not approved!",
                         "Your account is not approved! Please try to create a new request", userMail);
                     return RedirectToAction("Index");
@@ -113,7 +115,7 @@ namespace ClientWebApp.Controllers
                 var result = await UserManager.DeleteAsync(user);
                 if (result.Succeeded)
                 {
-                    SpUserManager.DeleteUser(user);
+                    _spUserManager.DeleteUser(user);
                     _emailManager.SendEmail("Your account has been deleted!",
                         "Your account has been deleted! Please try to create a new request", userMail);
                     return RedirectToAction("Index");
@@ -134,14 +136,6 @@ namespace ClientWebApp.Controllers
             foreach (var error in result.Errors)
             {
                 ModelState.AddModelError("", error);
-            }
-        }
-
-        private ISharePointUserManagerService SpUserManager
-        {
-            get
-            {
-                return new SharePointUserManagerService();
             }
         }
 

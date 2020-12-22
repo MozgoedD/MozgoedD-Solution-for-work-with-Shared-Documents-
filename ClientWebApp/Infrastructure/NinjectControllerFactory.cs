@@ -33,6 +33,7 @@ namespace ClientWebApp.Infrastructure
                 .WithConstructorArgument("SpAccountLogin", ConfigurationManager.AppSettings["SpAccountLogin"])
                 .WithConstructorArgument("SpAccountPassword", ConfigurationManager.AppSettings["SpAccountPassword"])
                 .WithConstructorArgument("SpSiteSharedDocsName", ConfigurationManager.AppSettings["SpSiteSharedDocsName"]);
+            ninjectKernel.Bind<ISharePointUserManagerService>().To<SharePointUserManagerService>();
         }
     }
 }

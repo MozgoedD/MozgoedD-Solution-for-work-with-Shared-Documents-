@@ -21,6 +21,12 @@ namespace ClientWebApp.Controllers
     [Authorize]
     public class AccountController : Controller
     {
+        ISharePointUserManagerService _spUserManager;
+        public AccountController(ISharePointUserManagerService spUserManager)
+        {
+            _spUserManager = spUserManager;
+        }
+
         [AllowAnonymous]
         public ActionResult Index()
         {
@@ -67,7 +73,7 @@ namespace ClientWebApp.Controllers
                     }
                     else
                     {
-                        user.SharePointId = spUserManager.AddUserToSpList(user);
+                        user.SharePointId = _spUserManager.AddUserToSpList(user);
                         result = await UserManager.UpdateAsync(user);
                         if (!result.Succeeded)
                         {
@@ -149,14 +155,6 @@ namespace ClientWebApp.Controllers
             foreach (var error in result.Errors)
             {
                 ModelState.AddModelError("", error);
-            }
-        }
-
-        private ISharePointUserManagerService spUserManager
-        {
-            get
-            {
-                return new SharePointUserManagerService();
             }
         }
 

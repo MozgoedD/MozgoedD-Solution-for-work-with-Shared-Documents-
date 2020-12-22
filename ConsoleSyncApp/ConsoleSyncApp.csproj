@@ -201,9 +201,7 @@
     <None Include="Config.json" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Classes\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\SharePointDAL\DAL.csproj">
       <Project>{290d5f26-11bc-4cd0-800c-22b8ae28781b}</Project>
