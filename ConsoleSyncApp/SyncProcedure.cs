@@ -1,9 +1,8 @@
 ﻿using Microsoft.SharePoint.Client;
-using DAL.SharePoint.Abstract;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using SharePointDAL.DataBase.Abstract;
+using DAL.Abstract;
 
 namespace ConsoleSyncApp
 {
@@ -11,11 +10,11 @@ namespace ConsoleSyncApp
     {
         ISpContextCredentialsService _spContextCredentialsServiceManager;
         ISyncSharedDocsWithDbRepo _syncWithDbRepoManager;
-        ISharedDocsGetter _sharedDocsGetter;
+        ISharedPointDocumentService _sharedDocsGetter;
 
         string SpSiteUrl;
         public SyncProcedure(ISpContextCredentialsService spContextCredentialsServiceManager, ISyncSharedDocsWithDbRepo syncWithDbRepoManager,
-            ISharedDocsGetter sharedDocsFilesGetterManager, string SpSiteUrl)
+            ISharedPointDocumentService sharedDocsFilesGetterManager, string SpSiteUrl)
         {
             _spContextCredentialsServiceManager = spContextCredentialsServiceManager;
             _syncWithDbRepoManager = syncWithDbRepoManager;

@@ -4,9 +4,7 @@ using Ninject;
 using System.Reflection;
 using ConsoleSyncApp.Services.Abstract;
 using Ninject.Parameters;
-using DAL.SharePoint.Abstract;
-using DAL.SharePoint.Concrete;
-using SharePointDAL.DataBase.Abstract;
+using DAL.Abstract;
 
 namespace ConsoleSyncApp
 {
@@ -29,15 +27,16 @@ namespace ConsoleSyncApp
             var settings = userSettingsBuilderManager.GetUserSettings();
 
             var spContextCredentialsServiceManager = kernel.Get<ISpContextCredentialsService>(
-                new ConstructorArgument("SpAccountLogin", settings.SpAccountLogin),
-                new ConstructorArgument("SpAccountPassword", settings.SpAccountPassword));
+                new ConstructorArgument("spAccountLogin", settings.SpAccountLogin),
+                new ConstructorArgument("spAccountPassword", settings.SpAccountPassword));
 
-            var syncWithDbRepoServiceManager = kernel.Get<ISyncSharedDocsWithDbRepo>();
+            var syncWithDbRepoServiceManager = kernel.Get<ISyncSharedDocsWithDbRepo>(
+                new ConstructorArgument("unitOfWork", kernel.Get<IUnitOfWork>()));
 
-            var sharedDocsFilesGetterManager = kernel.Get<SharedDocsGetter>(
+            var sharedDocsFilesGetterManager = kernel.Get<ISharedPointDocumentService>(
                 new ConstructorArgument("spContextCredentialsServiceManager", spContextCredentialsServiceManager),
-                new ConstructorArgument("SpSiteUrl", settings.SpSiteUrl),
-                new ConstructorArgument("SpSiteSharedDocsName", settings.SpSiteSharedDocsName));
+                new ConstructorArgument("spSiteUrl", settings.SpSiteUrl),
+                new ConstructorArgument("spSiteSharedDocsName", settings.SpSiteSharedDocsName));
 
             var spSyncProcedureManager = new SyncProcedure(spContextCredentialsServiceManager, syncWithDbRepoServiceManager,
                 sharedDocsFilesGetterManager, settings.SpSiteUrl);

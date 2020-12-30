@@ -1,7 +1,8 @@
-﻿using ClientWebApp.Infrastructure;
+﻿using BLL.Abstract;
+using ClientWebApp.Infrastructure;
 using ClientWebApp.Models;
-using ClientWebApp.Services.Abstract;
-using ClientWebApp.Services.Concrete;
+using DAL.Abstract;
+using DAL.Infrastructure;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using System;
@@ -18,23 +19,21 @@ namespace ClientWebApp.Controllers
     [Authorize(Roles = "Administrators")]
     public class AdminController : Controller
     {
-        IEmailService _emailManager;
-        ISharePointUserManagerService _spUserManager;
+        IAdminService _adminService;
 
-        public AdminController(IEmailService emailManager, ISharePointUserManagerService spUserManager)
+        public AdminController(IAdminService adminService)
         {
-            _emailManager = emailManager;
-            _spUserManager = spUserManager;
+            _adminService = adminService;
         }
 
         public ActionResult Index()
         {
-            return View(UserManager.Users);
+            return  View(_adminService.GetAll());
         }
 
         public async Task<ActionResult> ApprovePage(string id)
         {
-            var user = await UserManager.FindByIdAsync(id);
+            var user = await _adminService.GetById(id);
             if (user != null)
             {
                 return View(user);
@@ -54,27 +53,14 @@ namespace ClientWebApp.Controllers
             }
             else
             {
-                var user = await UserManager.FindByIdAsync(id);
-                if (user != null)
-                {
-                    user.IsApproved = true;
-                    var result = await UserManager.UpdateAsync(user);
-                    if (result.Succeeded)
-                    {
-                        _spUserManager.ApproveUser(user);
-                        _emailManager.SendEmail("Your account is now approved!",
-                            $"Your account is now approved!\nYour password is: {user.RawPassword}", user.Email);
-                        return RedirectToAction("Index");
-                    }
-                    else
-                    {
-                        AddErrorsFromResult(result);
-                    }
-                }
-                else
-                {
-                    ModelState.AddModelError("", "User Not Found");
-                }
+                var user = await _adminService.GetById(id);
+
+                if (user == null) return View("Error", "User not found");
+
+                var result = await _adminService.ApproveUser(id);
+
+                if (result != null) ModelState.AddModelError("", result);
+
                 return View(user);
             }
         }
@@ -82,69 +68,21 @@ namespace ClientWebApp.Controllers
         [HttpPost]
         public async Task<ActionResult> Reject(string id)
         {
-            var user = await UserManager.FindByIdAsync(id);
-            if (user != null)
-            {
-                var userMail = user.Email;
-                var result = await UserManager.DeleteAsync(user);
-                if (result.Succeeded)
-                {
-                    _spUserManager.DeleteUser(user);
-                    _emailManager.SendEmail("Your account is not approved!",
-                        "Your account is not approved! Please try to create a new request", userMail);
-                    return RedirectToAction("Index");
-                }
-                else
-                {
-                    return View("Error", result.Errors);
-                }
-            }
-            else
-            {
-                return View("Error", new string[] { "User not found" });
-            }
+            var result = await _adminService.RejectUser(id);
+
+            if (result != null) return View("Error", result);
+
+            else return RedirectToAction("Index");
         }
 
         [HttpPost]
         public async Task<ActionResult> Delete(string id)
         {
-            var user = await UserManager.FindByIdAsync(id);
-            if (user != null)
-            {
-                var userMail = user.Email;
-                var result = await UserManager.DeleteAsync(user);
-                if (result.Succeeded)
-                {
-                    _spUserManager.DeleteUser(user);
-                    _emailManager.SendEmail("Your account has been deleted!",
-                        "Your account has been deleted! Please try to create a new request", userMail);
-                    return RedirectToAction("Index");
-                }
-                else
-                {
-                    return View("Error", result.Errors);
-                }
-            }
-            else
-            {
-                return View("Error", new string[] { "User not found" });
-            }
-        }
+            var result = await _adminService.DeleteUser(id);
 
-        private void AddErrorsFromResult(IdentityResult result)
-        {
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError("", error);
-            }
-        }
+            if (result != null) return View("Error", result);
 
-        private AppUserManager UserManager
-        {
-            get
-            {
-                return HttpContext.GetOwinContext().GetUserManager<AppUserManager>();
-            }
+            else return RedirectToAction("Index");        
         }
     }
 }

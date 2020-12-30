@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleSyncApp", "ConsoleSy
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DAL", "SharePointDAL\DAL.csproj", "{290D5F26-11BC-4CD0-800C-22B8AE28781B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{8E3FE081-9B3F-4582-A0DB-01B22DECAB72}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BLL", "BLL\BLL.csproj", "{11C129A8-44D8-4BFB-8273-881F4831A20F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{290D5F26-11BC-4CD0-800C-22B8AE28781B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{290D5F26-11BC-4CD0-800C-22B8AE28781B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{290D5F26-11BC-4CD0-800C-22B8AE28781B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E3FE081-9B3F-4582-A0DB-01B22DECAB72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E3FE081-9B3F-4582-A0DB-01B22DECAB72}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E3FE081-9B3F-4582-A0DB-01B22DECAB72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E3FE081-9B3F-4582-A0DB-01B22DECAB72}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11C129A8-44D8-4BFB-8273-881F4831A20F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11C129A8-44D8-4BFB-8273-881F4831A20F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11C129A8-44D8-4BFB-8273-881F4831A20F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11C129A8-44D8-4BFB-8273-881F4831A20F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

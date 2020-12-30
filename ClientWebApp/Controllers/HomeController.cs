@@ -1,9 +1,7 @@
 ﻿using ClientWebApp.Infrastructure;
 using ClientWebApp.Models;
-using DAL.SharePoint.Abstract;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
-using DAL.SharePoint.Concrete;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,34 +9,35 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using DAL.Models;
+using Core.Models;
+using DAL.Infrastructure;
+using BLL.Abstract;
 
 namespace ClientWebApp.Controllers
 {
     [Authorize]
     public class HomeController : Controller
     {
-        AppDbContext filesContext = new AppDbContext();
-        ISharedDocsCDService _sharedDocsManager;
+        IDocsPageService _service;
 
-        public HomeController(ISharedDocsCDService sharedDocsManager)
+        public HomeController(IDocsPageService service)
         {
-            _sharedDocsManager = sharedDocsManager;
+            _service = service;
         }
 
         public ActionResult Index()
         {
-            var user = CurrentUser;
+            var user = _service.GetCurrentUser();
             if (user != null)
             {
                 ViewBag.UserName = user.UserName;
             }
-            return View(filesContext.Files);
+            return View(_service.GetAllFiles());
         }
 
         public ActionResult Create()
         {
-            var user = CurrentUser;
+            var user = _service.GetCurrentUser();
             ViewBag.AuthorId = user.Id;
             return View();
         }
@@ -53,41 +52,12 @@ namespace ClientWebApp.Controllers
                     Name = Path.GetFileName(fileModel.File.FileName),
                     AuthorId = fileModel.AuthorId,
                 };
-
-                var fileInDb = filesContext.Files.Where(f => f.Name == file.Name).FirstOrDefault();
-                if (fileInDb == null)
+                var result = _service.UploadFile(file, fileModel.File);
+                switch (result)
                 {
-                    var uploadedFile = new byte[fileModel.File.InputStream.Length];
-                    fileModel.File.InputStream.Read(uploadedFile, 0, uploadedFile.Length);
-                    file.File = uploadedFile.ToArray();
-                    _sharedDocsManager.UploadFileToSP(file);
-
-                    filesContext.Files.Add(file);
-                    filesContext.SaveChanges();
-                    return RedirectToAction("Index");
-                }
-                else
-                {
-                    var user = CurrentUser;
-                    if (user.Id == fileInDb.AuthorId || UserManager.IsInRole(user.Id, "Administrators"))
-                    {
-                        _sharedDocsManager.DeleteFileFromSP(fileInDb);
-                        filesContext.Files.Remove(fileInDb);
-                        filesContext.SaveChanges();
-
-                        var uploadedFile = new byte[fileModel.File.InputStream.Length];
-                        fileModel.File.InputStream.Read(uploadedFile, 0, uploadedFile.Length);
-                        file.File = uploadedFile.ToArray();
-                        _sharedDocsManager.UploadFileToSP(file);
-
-                        filesContext.Files.Add(file);
-                        filesContext.SaveChanges();
-                        return RedirectToAction("Index");
-                    }
-                    else
-                    {
-                        return RedirectToAction("LoginNotAccess", "Account");
-                    }
+                    case 0: return RedirectToAction("Index");
+                    case 1: return RedirectToAction("LoginNotAccess", "Account");
+                    default: return View("Error", new string[] { "File Not Found" });
                 }
             }
             return View();
@@ -95,65 +65,31 @@ namespace ClientWebApp.Controllers
 
         public FileResult Download(int fileId)
         {
-            var file = filesContext.Files.Find(fileId);
+            var file = _service.GetFileById(fileId);
             return File(file.File, "multipart/form-data", file.Name);
         }
 
         [HttpPost]
         public ActionResult Delete(int fileId)
         {
-            var user = CurrentUser;
-            var file = filesContext.Files.Find(fileId);
-            if (file == null)
+            var result = _service.DeleteFile(fileId);
+            switch (result)
             {
-                return View("Error", new string[] { "User not found" });
-            }
-            else
-            {
-                if (user.Id == file.AuthorId || UserManager.IsInRole(user.Id, "Administrators"))
-                {
-                    _sharedDocsManager.DeleteFileFromSP(file);
-                    filesContext.Files.Remove(file);
-                    filesContext.SaveChanges();
-                    return RedirectToAction("Index");
-                }
-                else
-                {
-                    return RedirectToAction("LoginNotAccess", "Account");
-                }
+                case 0: return RedirectToAction("Index");
+                case 1: return RedirectToAction("LoginNotAccess", "Account");
+                default: return View("Error", new string[] { "File Not Found" });
             }
         }
 
         public ActionResult About()
         {
-            var user = CurrentUser;
-            if (user != null)
+            var result = _service.UserMenu();
+            var user = _service.GetCurrentUser();
+            switch (result)
             {
-                if (UserManager.IsInRole(user.Id, "Administrators"))
-                {
-                    return RedirectToAction("Index", "Admin");
-                }
-                return View(user);
-            }
-            else
-            {
-                return RedirectToAction("Index");
-            }
-        }
-
-        private AppUserManager UserManager
-        {
-            get
-            {
-                return HttpContext.GetOwinContext().GetUserManager<AppUserManager>();
-            }
-        }
-
-        private AppUser CurrentUser
-        {
-            get
-            {
-                return UserManager.FindByName(HttpContext.User.Identity.Name);
+                case 0: return View(user);
+                case 1: return RedirectToAction("Index", "Admin");
+                default: return RedirectToAction("Index");
             }
         }
     }

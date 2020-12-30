@@ -1,16 +1,11 @@
-﻿using ClientWebApp.Infrastructure;
+﻿using BLL.Abstract;
 using ClientWebApp.Models;
-using ClientWebApp.Services.Abstract;
-using ClientWebApp.Services.Concrete;
+using Core.Models;
+using DAL.Abstract;
+using DAL.Infrastructure;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Diagnostics;
-using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -21,10 +16,10 @@ namespace ClientWebApp.Controllers
     [Authorize]
     public class AccountController : Controller
     {
-        ISharePointUserManagerService _spUserManager;
-        public AccountController(ISharePointUserManagerService spUserManager)
+        ILoginService _loginService;
+        public AccountController(ILoginService loginService)
         {
-            _spUserManager = spUserManager;
+            _loginService = loginService;
         }
 
         [AllowAnonymous]
@@ -61,30 +56,13 @@ namespace ClientWebApp.Controllers
                     IsApproved = false,
                     RawPassword = System.Web.Security.Membership.GeneratePassword(5, 0)
                 };
+                var result = await _loginService.CreateUser(user);
 
-                var result = await UserManager.CreateAsync(user, user.RawPassword);
+                if (result == null) return RedirectToAction("Index");
 
-                if (result.Succeeded)
-                {
-                    result = await UserManager.AddToRoleAsync(user.Id, "Users");
-                    if (!result.Succeeded)
-                    {
-                        AddErrorsFromResult(result);
-                    }
-                    else
-                    {
-                        user.SharePointId = _spUserManager.AddUserToSpList(user);
-                        result = await UserManager.UpdateAsync(user);
-                        if (!result.Succeeded)
-                        {
-                            AddErrorsFromResult(result);
-                        }
-                        return RedirectToAction("Index");
-                    }
-                }
                 else
                 {
-                    AddErrorsFromResult(result);
+                    ModelState.AddModelError("", result);
                 }
             }
             return View(model);
@@ -102,7 +80,7 @@ namespace ClientWebApp.Controllers
             return View();
         }
 
-        public ActionResult LoginNotAccess(string returnUrl)
+        public ActionResult LoginNotAccess()
         {
             return View();
         }
@@ -112,7 +90,7 @@ namespace ClientWebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginViewModel details, string returnUrl)
         {
-            var user = await UserManager.FindAsync(details.Name, details.Password);
+            var user = await _loginService.GetUserByCreds(details.Name, details.Password);
             if (user == null)
             {
                 ModelState.AddModelError("", "Invalid Username or Password");
@@ -121,13 +99,7 @@ namespace ClientWebApp.Controllers
             {
                 if (user.IsApproved)
                 {
-                    var ident = await UserManager.CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie);
-
-                    AuthManager.SignOut();
-                    AuthManager.SignIn(new AuthenticationProperties
-                    {
-                        IsPersistent = false
-                    }, ident);
+                    await _loginService.Login(user, DefaultAuthenticationTypes.ApplicationCookie);
 
                     if (returnUrl == null)
                     {
@@ -146,32 +118,8 @@ namespace ClientWebApp.Controllers
         [Authorize]
         public ActionResult Logout()
         {
-            AuthManager.SignOut();
+            _loginService.Logout();
             return RedirectToAction("Index", "Home");
-        }
-
-        private void AddErrorsFromResult(IdentityResult result)
-        {
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError("", error);
-            }
-        }
-
-        private IAuthenticationManager AuthManager
-        {
-            get
-            {
-                return HttpContext.GetOwinContext().Authentication;
-            }
-        }
-
-        private AppUserManager UserManager
-        {
-            get
-            {
-                return HttpContext.GetOwinContext().GetUserManager<AppUserManager>();
-            }
         }
     }
 }

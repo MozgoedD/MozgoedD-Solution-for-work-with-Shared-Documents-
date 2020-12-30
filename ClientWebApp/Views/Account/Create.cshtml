@@ -1,4 +1,4 @@
-﻿@using ClientWebApp.Models
+﻿@using Core.Models
 @model ClientWebApp.Models.CreateModel
 
 @{
@@ -38,7 +38,8 @@
 
     <div class="form-group">
         <label>Date Of Birth</label>
-        @Html.TextBoxFor(x => x.DOB, new { @class = "form-control" })
+        @Html.EditorFor(x => x.DOB, new { htmlAttributes = new { @class = "datepicker form-control" } })
+        @*@Html.TextBoxFor(x => x.DOB, new { @class = "form-control" })*@
     </div>
 
     <div class="form-group">

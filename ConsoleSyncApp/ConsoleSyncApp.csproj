@@ -203,6 +203,10 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <ProjectReference Include="..\Core\Core.csproj">
+      <Project>{8E3FE081-9B3F-4582-A0DB-01B22DECAB72}</Project>
+      <Name>Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SharePointDAL\DAL.csproj">
       <Project>{290d5f26-11bc-4cd0-800c-22b8ae28781b}</Project>
       <Name>DAL</Name>
