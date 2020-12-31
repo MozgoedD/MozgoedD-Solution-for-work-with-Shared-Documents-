@@ -59,9 +59,13 @@ namespace ClientWebApp.Controllers
 
                 var result = await _adminService.ApproveUser(id);
 
-                if (result != null) ModelState.AddModelError("", result);
+                if (result != null) 
+                {
+                    ModelState.AddModelError("", result);
+                    return View(user);
+                }
 
-                return View(user);
+                return RedirectToAction("Index");
             }
         }
 

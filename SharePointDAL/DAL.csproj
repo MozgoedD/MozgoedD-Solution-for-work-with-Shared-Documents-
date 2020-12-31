@@ -135,14 +135,12 @@
     <Compile Include="Abstract\IRepository.cs" />
     <Compile Include="Abstract\ISharedPointDocumentService.cs" />
     <Compile Include="Abstract\ISharePointUserService.cs" />
-    <Compile Include="Abstract\ISyncSharedDocsWithDbRepo.cs" />
     <Compile Include="Abstract\IUnitOfWork.cs" />
     <Compile Include="Concrete\FileRepository.cs" />
     <Compile Include="Concrete\IdentityManager.cs" />
     <Compile Include="Concrete\Repository.cs" />
     <Compile Include="Concrete\SharedPointDocumentService.cs" />
     <Compile Include="Concrete\SharePointUserService.cs" />
-    <Compile Include="Concrete\SyncSharedDocsWithDbRepo.cs" />
     <Compile Include="Concrete\UnitOfWork.cs" />
     <Compile Include="Infrastructure\AppRoleManager.cs" />
     <Compile Include="Infrastructure\AppUserManager.cs" />

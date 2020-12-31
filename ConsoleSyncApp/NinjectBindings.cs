@@ -3,6 +3,8 @@ using ConsoleSyncApp.Services.Concrete;
 using Ninject.Modules;
 using DAL.Concrete;
 using DAL.Abstract;
+using BLL.Abstract;
+using BLL.Concrete;
 
 namespace ConsoleSyncApp
 {

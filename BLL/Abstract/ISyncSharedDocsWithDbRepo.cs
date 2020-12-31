@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DAL.Abstract
+namespace BLL.Abstract
 {
     public interface ISyncSharedDocsWithDbRepo
     {

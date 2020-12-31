@@ -69,10 +69,12 @@
     <Compile Include="Abstract\IDocsPageService.cs" />
     <Compile Include="Abstract\IEmailService.cs" />
     <Compile Include="Abstract\ILoginService.cs" />
+    <Compile Include="Abstract\ISyncSharedDocsWithDbRepo.cs" />
     <Compile Include="Concrete\AdminService.cs" />
     <Compile Include="Concrete\DocsPageService.cs" />
     <Compile Include="Concrete\EmailService.cs" />
     <Compile Include="Concrete\LoginService.cs" />
+    <Compile Include="Concrete\SyncSharedDocsWithDbRepo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

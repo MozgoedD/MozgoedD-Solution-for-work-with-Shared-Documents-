@@ -203,6 +203,10 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <ProjectReference Include="..\BLL\BLL.csproj">
+      <Project>{11c129a8-44d8-4bfb-8273-881f4831a20f}</Project>
+      <Name>BLL</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Core\Core.csproj">
       <Project>{8E3FE081-9B3F-4582-A0DB-01B22DECAB72}</Project>
       <Name>Core</Name>

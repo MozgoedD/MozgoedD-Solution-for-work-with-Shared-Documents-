@@ -5,6 +5,7 @@ using System.Reflection;
 using ConsoleSyncApp.Services.Abstract;
 using Ninject.Parameters;
 using DAL.Abstract;
+using BLL.Abstract;
 
 namespace ConsoleSyncApp
 {

@@ -1,13 +1,13 @@
-﻿using Core.Models;
+﻿using BLL.Abstract;
+using Core.Models;
 using DAL.Abstract;
-using DAL.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DAL.Concrete
+namespace BLL.Concrete
 {
     public class SyncSharedDocsWithDbRepo : ISyncSharedDocsWithDbRepo
     {
