@@ -190,6 +190,7 @@
   <ItemGroup>
     <Compile Include="Models\Settings.cs" />
     <Compile Include="NinjectBindings.cs" />
+    <Compile Include="NinjectInitializer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\Abstract\IUserSettingsBuilder.cs" />
